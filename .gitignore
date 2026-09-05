@@ -1,0 +1,11 @@
+# 敏感/临时内容——永不入库
+**/.credentials.yaml
+**/.credentials*.yaml*
+**/*.log
+**/node_modules/
+**/.git/
+.DS_Store
+Thumbs.db
+
+# 技能管理器回收站
+**/.trash/

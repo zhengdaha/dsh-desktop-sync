@@ -1,0 +1,132 @@
+{
+    "generatedAt":  "2026-09-05T01:10:35.8004680Z",
+    "desktopAppVersion":  "0.7.2",
+    "profile":  "web",
+    "generationPlugins":  [
+                              {
+                                  "name":  "@linxin666/dsh-client-ui-git-graph",
+                                  "version":  "0.3.14",
+                                  "kind":  "registry",
+                                  "spec":  "@linxin666/dsh-client-ui-git-graph@0.3.14"
+                              },
+                              {
+                                  "name":  "@linxin666/dsh-client-ui-skill-explorer",
+                                  "version":  "0.3.14",
+                                  "kind":  "registry",
+                                  "spec":  "@linxin666/dsh-client-ui-skill-explorer@0.3.14"
+                              },
+                              {
+                                  "name":  "@linxin666/dsh-client-ui-task-board",
+                                  "version":  "0.3.14",
+                                  "kind":  "registry",
+                                  "spec":  "@linxin666/dsh-client-ui-task-board@0.3.14"
+                              },
+                              {
+                                  "name":  "@linxin666/dsh-remote-web-ui",
+                                  "version":  "0.3.14",
+                                  "kind":  "registry",
+                                  "spec":  "@linxin666/dsh-remote-web-ui@0.3.14"
+                              },
+                              {
+                                  "name":  "@nanmicoder/dsh-agent-teams",
+                                  "version":  "0.1.15",
+                                  "kind":  "registry",
+                                  "spec":  "@nanmicoder/dsh-agent-teams@0.1.15"
+                              },
+                              {
+                                  "name":  "@noob-stupid/dsh-plugin-console",
+                                  "version":  "0.3.27",
+                                  "kind":  "registry",
+                                  "spec":  "@noob-stupid/dsh-plugin-console@0.3.27"
+                              },
+                              {
+                                  "name":  "dsh-better-reasoning-effort",
+                                  "version":  "0.3.5",
+                                  "kind":  "registry",
+                                  "spec":  "dsh-better-reasoning-effort@0.3.5"
+                              },
+                              {
+                                  "name":  "dsh-better-sidebar",
+                                  "version":  "0.18.0",
+                                  "kind":  "registry",
+                                  "spec":  "dsh-better-sidebar@0.18.0"
+                              },
+                              {
+                                  "name":  "dsh-builtin-browser",
+                                  "version":  "0.1.21",
+                                  "kind":  "registry",
+                                  "spec":  "dsh-builtin-browser@0.1.21"
+                              },
+                              {
+                                  "name":  "dsh-client-auto-continue",
+                                  "version":  "0.11.4",
+                                  "kind":  "registry",
+                                  "spec":  "dsh-client-auto-continue@0.11.4"
+                              },
+                              {
+                                  "name":  "dsh-complete-notify",
+                                  "version":  "0.6.2",
+                                  "kind":  "registry",
+                                  "spec":  "dsh-complete-notify@0.6.2"
+                              },
+                              {
+                                  "name":  "dsh-easyrewrite",
+                                  "version":  "2.3.1",
+                                  "kind":  "registry",
+                                  "spec":  "dsh-easyrewrite@2.3.1"
+                              },
+                              {
+                                  "name":  "dsh-find-plugin",
+                                  "version":  "0.3.7",
+                                  "kind":  "registry",
+                                  "spec":  "dsh-find-plugin@0.3.7"
+                              },
+                              {
+                                  "name":  "dshmarket",
+                                  "version":  "1.39.0",
+                                  "kind":  "registry",
+                                  "spec":  "dshmarket@1.39.0"
+                              },
+                              {
+                                  "name":  "dsh-rewind-plugin",
+                                  "version":  "0.7.5",
+                                  "kind":  "registry",
+                                  "spec":  "dsh-rewind-plugin@0.7.5"
+                              },
+                              {
+                                  "name":  "dsh-usage-mkeai",
+                                  "version":  "0.1.0",
+                                  "kind":  "vendored",
+                                  "spec":  "dsh-usage-mkeai@0.1.0"
+                              },
+                              {
+                                  "name":  "dsh-usage-statistics-panel",
+                                  "version":  "0.1.10",
+                                  "kind":  "registry",
+                                  "spec":  "dsh-usage-statistics-panel@0.1.10"
+                              }
+                          ],
+    "extraProfileDependencies":  {
+                                     "@deepseek-harness-tui/dsh-tui":  "0.10.0-beta.4",
+                                     "dsh1024":  "0.5.0"
+                                 },
+    "requiredEnvVars":  [
+                            "DEEPSEEK_API_KEY",
+                            "ANCHUAN_API_KEY",
+                            "CHATGPT_API_KEY",
+                            "MKEAI_API_KEY"
+                        ],
+    "excluded":  [
+                     ".credentials.yaml",
+                     "logs",
+                     "sessions",
+                     "rewind-snapshots",
+                     "attachments",
+                     "storages",
+                     "Cache",
+                     "GPUCache",
+                     ".desktop-bin",
+                     "profiles/web/node_modules",
+                     "profiles/.generations/live"
+                 ]
+}

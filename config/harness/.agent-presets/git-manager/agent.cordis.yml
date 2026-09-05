@@ -1,0 +1,136 @@
+# The `req-mgr` agent preset: requirement analysis and requirement management.
+#
+# This file is an AGENT-PLANE composition. The roster mounts it ONCE under a
+# standing scope; every session naming it joins by scope parentage, so the
+# tools and prompt sections registered here cover each joined agent while a
+# session's own state stays keyed per Session/Agent inside the plugins. The
+# host composition keeps everything a preset must not own: the registries
+# themselves, the sandbox and approval stack, persistence, and the model route.
+#
+# A service row here MUST sit inside a group carrying an `isolate` realm.
+# The only group in this file is `compaction`, which owns the per-agent
+# compaction and tool-result-pruner services behind an entry-local realm.
+
+# ── identity ────────────────────────────────────────────────────────────────
+
+# The preset's own persona, shadowing the deployment default for this agent.
+# `{{model}}` and `{{cwd}}` resolve from the agent's own route and workspace.
+- id: persona
+  name: '@deepseek-ai/dsh-persona'
+  config:
+    text: |-
+      你是一名资深的需求分析师与需求管理专员，运行在 DeepSeek Harness 环境（模型：{{model}}），当前工作目录是 {{cwd}}。
+
+      你的职责：接收项目的新需求，先检索需求存储中的相关或矛盾需求，再结合指定 GitHub 仓库的最新代码进行分析与判断，最后在用户确认后将需求写入结构化的需求存储并维护索引。
+
+      ## 工作配置（本 preset 的固定参数）
+      - GITHUB_REPO：代码仓库地址（HTTPS 或 SSH，如 https://github.com/org/repo 或 git@github.com:org/repo.git）
+      - GITHUB_BRANCH：分支名（如 main / master / dev）
+      - REQUIREMENTS_DIR：需求存储目录（本地路径，用于存放需求文档与索引）
+
+      配置持久化保存在 <REQUIREMENTS_DIR>/.reqmgr/config.json。每个新会话在开始处理第一个需求之前：
+      1. 读取 config.json：若存在，展示当前配置并确认存储目录可访问。
+      2. 若不存在或用户要求重新配置，用 ask_user_question 一次性问清三项配置；随后用 git ls-remote --heads <repo> <branch> 校验仓库可达，创建存储目录结构并写入 config.json。
+
+      ## 新需求处理流程（必须按顺序执行；开始前先加载 requirement-management 技能获取完整规范）
+      1. 规范化需求：提取标题、详细描述、验收标准（缺失则标注“待补充”）、优先级（高/中/低，缺失则标注）、来源。
+      2. 检索需求存储：列出 <REQUIREMENTS_DIR>/requirements/ 下全部需求文件，按关键词 grep 检索并阅读命中文件与 README 索引，识别重复、相关、矛盾的需求并给出依据。
+      3. 拉取最新代码：git clone --depth 1 --branch <branch> <repo> <工作区>/_src（已存在则 git fetch + git reset --hard origin/<branch>），浏览仓库结构，定位并阅读与需求相关的模块和关键实现。
+      4. 结合代码分析：给出可行性、影响范围（具体文件/模块/接口）、与现有架构的契合度、与已存需求的冲突分析、工作量与风险估计，以及结论建议（接受 / 拒绝 / 需澄清 / 与某需求合并）。所有判断必须引用具体依据（需求文件编号或代码路径）。
+      5. 征求用户决定：用 ask_user_question 询问是否将需求加入需求存储；用户确认后按技能规范写入需求文件并更新 README 索引。
+
+      ## 边界
+      - 本 preset 只做需求的分析与管理，不修改仓库代码、不提交任何代码改动。
+      - 写入或修改需求存储前，必须先用 ask_user_question 征得用户同意。
+      - 用中文回复，技术术语可保留英文。
+
+- id: agent-instructions
+  name: '@deepseek-ai/dsh-agent-instructions'
+  config:
+    maxBytes: 65536
+
+# ── shell ───────────────────────────────────────────────────────────────────
+
+# `shell-env` stays in the HOST composition; both shell tools consume the host
+# registry from here; their executors (`bash-sandbox`/`pwsh-sandbox`) are
+# host-plane too. Git operations for requirement analysis run through these.
+- id: tool-bash
+  name: '@deepseek-ai/dsh-tool-bash'
+  disabled: !!js process.platform === 'win32'
+
+- id: tool-pwsh
+  name: '@deepseek-ai/dsh-tool-pwsh'
+  disabled: !!js process.platform !== 'win32'
+
+# ── filesystem ──────────────────────────────────────────────────────────────
+
+# Both register into the host `tools` registry and provide nothing, so
+# they need no realm. The `fs` service and its policy stay in the host.
+- id: tool-fs
+  name: '@deepseek-ai/dsh-tool-fs'
+
+- id: tool-fs-search
+  name: '@deepseek-ai/dsh-tool-fs-search'
+  config:
+    sampleOverCapGlobResults: false
+
+# ── background jobs ────────────────────────────────────────────────────────
+
+# Only the model-facing controls; the task REGISTRY stays on the host plane.
+# Long git clones can run in the background and be collected here.
+- id: tool-jobs
+  name: '@deepseek-ai/dsh-tool-jobs'
+
+# ── skills ──────────────────────────────────────────────────────────────────
+
+# The `requirement-management` skill travels with this preset rather than
+# living in the user's skill root: it documents the workflow THIS preset runs,
+# and a preset is the unit that gets copied and edited. `baseUrl` is the
+# preset's own directory, so the root resolves wherever the preset is
+# installed. Both rows register into THIS preset's layer of the host skill
+# registry, so they need no realm.
+- id: skill-filesystem
+  name: '@deepseek-ai/dsh-skill-filesystem'
+  config:
+    customSkillDirs:
+      - !!js "process.getBuiltinModule('node:url').fileURLToPath(new URL('skills/', baseUrl))"
+
+- id: tool-skill
+  name: '@deepseek-ai/dsh-tool-skill'
+
+# ── compaction ──────────────────────────────────────────────────────────────
+
+# `compaction-basic` reads `toolResultPrune` through `ctx.get`, so the pruner
+# must share this realm rather than sit outside it. `tokenMeter` is
+# deliberately NOT in this realm: the meter stays on the HOST plane.
+- id: compaction
+  name: cordis:group
+  group: true
+  isolate:
+    compaction: true
+    toolResultPruner: true
+  config:
+    - id: compaction-basic
+      name: '@deepseek-ai/dsh-compaction-basic'
+
+    - id: command-compact
+      name: '@deepseek-ai/dsh-command-compact'
+
+    - id: tool-result-pruner
+      name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
+      config:
+        thresholdChars: 8192
+        headChars: 4096
+        tailChars: 1024
+
+# ── remaining model-facing rows ─────────────────────────────────────────────
+
+# The user decision gate for adding a requirement to storage.
+- id: tool-ask-user
+  name: '@deepseek-ai/dsh-tool-ask-user'
+
+# Multi-step workflow tracking for requirement processing.
+- id: tool-todo
+  name: '@deepseek-ai/dsh-tool-todo'
+  config:
+    allowParallelInProgress: true

@@ -1,0 +1,12 @@
+{
+  "active": "blue-fantasy",
+  "initialized": true,
+  "background": {
+    "enabled": true,
+    "backgroundOpacity": 0,
+    "backgroundBlurEmpty": 0,
+    "backgroundBlurContent": 0,
+    "inputCardBlur": 10,
+    "bubbleOpacity": 50
+  }
+}

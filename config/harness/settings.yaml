@@ -1,0 +1,101 @@
+ui-onboarding:
+  welcomeNoticeVersion: 2026-08-13.1
+ui-theme:
+  fontSize: 17
+  preference: system
+llm-pi-ai:
+  providers:
+    anchuan:
+      displayName: 安川网络DeepSeek API
+      apiKeyEnv: ANCHUAN_API_KEY
+      api: openai-completions
+      baseURL: https://tb.api.mkeai.com/v1
+      models:
+        - id: deepseek-v4-flash
+          input:
+            - text
+            - image
+          reasoningEfforts:
+            off: none
+            low: low
+            high: high
+            max: max
+          compat:
+            thinkingFormat: deepseek
+            supportsReasoningEffort: true
+        - id: deepseek-v4-pro
+          input:
+            - text
+            - image
+          reasoningEfforts:
+            off: none
+            low: low
+            high: high
+            max: max
+          compat:
+            thinkingFormat: deepseek
+            supportsReasoningEffort: true
+    chatgpt:
+      apiKeyEnv: CHATGPT_API_KEY
+      api: openai-responses
+      baseURL: https://happycodeai.com
+      models:
+        - id: gpt-5.6-luna
+          name: gpt-5.6-luna
+          input:
+            - text
+            - image
+          reasoningEfforts:
+            off: none
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: gpt-5.6-sol
+          name: gpt-5.6-sol
+          input:
+            - text
+            - image
+          reasoningEfforts:
+            off: none
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: gpt-5.6-terra
+          name: gpt-5.6-terra
+          input:
+            - text
+            - image
+          reasoningEfforts:
+            off: none
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+agent-default-model:
+  provider: deepseek-official
+  model: deepseek-v4-flash
+  reasoningEffort: high
+agent-presets:
+  default: liangshen
+dsh-better-sidebar:
+  tabsEnabled:
+    git: true
+  agentOpenTools: true
+auto-continue:
+  paused: true
+shell:
+  pwshPath: '{{USERPROFILE}}\AppData\Local\Microsoft\WindowsApps\pwsh.exe'
+subagent-model-selection:
+  enabled: true
+  allowedModels:
+    - provider: anchuan
+      model: deepseek-v4-flash
+    - provider: anchuan
+      model: deepseek-v4-pro
+    - provider: chatgpt
+      model: gpt-5.6-luna

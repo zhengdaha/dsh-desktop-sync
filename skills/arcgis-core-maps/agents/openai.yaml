@@ -1,0 +1,3 @@
+﻿interface:
+  display_name: "ArcGIS Core Maps"
+  short_description: "Build interactive 2D/3D maps, read GDB files, raster/imagery processing, and run spatial analysis"

@@ -1,0 +1,41 @@
+{
+  "name": "dsh-usage-mkeai",
+  "version": "0.1.0",
+  "description": "DSH 用量插件:侧栏「用量」面板同时展示官方 DeepSeek 余额与第三方 mkeai 通道余额/用量日志。密钥仅 host 侧解析,不进浏览器。",
+  "type": "module",
+  "main": "host.js",
+  "exports": {
+    ".": "./host.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "host.js",
+    "client.js",
+    "cordis.patch.yml"
+  ],
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "dsh",
+    "usage",
+    "balance",
+    "mkeai",
+    "quota"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime"
+      ],
+      "platform": "web",
+      "immediately": true
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
