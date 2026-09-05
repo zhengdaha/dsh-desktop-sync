@@ -31,7 +31,11 @@
 ## 源电脑：每次改完配置/插件后
 
 1. 完全退出 DSH Desktop。
-2. 在仓库目录执行：
+2. 在仓库目录执行（一条命令完成备份+提交+推送）：
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File .\update-sync.ps1
+   ```
+   或手动分步执行：
    ```powershell
    powershell -ExecutionPolicy Bypass -File .\backup.ps1
    git add -A
@@ -42,9 +46,9 @@
 ## 新电脑：首次迁移
 
 1. 安装并启动一次 DSH Desktop，然后**完全退出**（让它生成默认 profile）。
-2. 克隆私有仓库：
+2. 克隆私有仓库（本机已配置凭据后可直接 push/pull）：
    ```powershell
-   git clone https://github.com/<你的账号>/dsh-desktop-sync.git
+   git clone https://github.com/zhengdaha/dsh-desktop-sync.git
    cd dsh-desktop-sync
    ```
 3. 执行还原（会自动下载/重建全部插件，需要几分钟）：
